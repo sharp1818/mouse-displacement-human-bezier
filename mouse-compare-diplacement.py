@@ -36,34 +36,23 @@ def linear_interpolation(p1, p2, num_points=100):
     y_vals = np.linspace(p1[1], p2[1], num_points)
     return list(zip(x_vals.astype(int), y_vals.astype(int)))
 
-# Generación de curvas de Bézier sin superposición
-def bezier_curve(p1, p2, num_curves=3, num_points=100):
+# Generación de múltiples curvas de Bézier con curvatura suave y separación
+def bezier_curves(p1, p2, num_curves=100, num_points=100, separation=10):
     curves = []
-    used_areas = []
+    for i in range(num_curves):
+        # Desplazar aleatoriamente los puntos de control para que las curvas estén separadas
+        control1 = (p1[0] + np.random.randint(-separation, separation), p1[1] + np.random.randint(-separation, separation))
+        control2 = (p2[0] + np.random.randint(-separation, separation), p2[1] + np.random.randint(-separation, separation))
 
-    for _ in range(num_curves):
-        valid_curve = False
+        t = np.linspace(0, 1, num_points)
+        curve = []
 
-        while not valid_curve:
-            control1 = (p1[0] + np.random.randint(-50, 50), p1[1] + np.random.randint(-50, 50))
-            control2 = (p2[0] + np.random.randint(-50, 50), p2[1] + np.random.randint(-50, 50))
+        for t_val in t:
+            x = (1 - t_val)**3 * p1[0] + 3 * (1 - t_val)**2 * t_val * control1[0] + 3 * (1 - t_val) * t_val**2 * control2[0] + t_val**3 * p2[0]
+            y = (1 - t_val)**3 * p1[1] + 3 * (1 - t_val)**2 * t_val * control1[1] + 3 * (1 - t_val) * t_val**2 * control2[1] + t_val**3 * p2[1]
+            curve.append((int(x), int(y)))
 
-            t = np.linspace(0, 1, num_points)
-            curve = []
-
-            for t_val in t:
-                x = (1 - t_val)**3 * p1[0] + 3 * (1 - t_val)**2 * t_val * control1[0] + 3 * (1 - t_val) * t_val**2 * control2[0] + t_val**3 * p2[0]
-                y = (1 - t_val)**3 * p1[1] + 3 * (1 - t_val)**2 * t_val * control1[1] + 3 * (1 - t_val) * t_val**2 * control2[1] + t_val**3 * p2[1]
-                curve.append((int(x), int(y)))
-
-            # Comprobar que la curva no se superpone a otras
-            curve_area = [(point[0] // 10, point[1] // 10) for point in curve]  # Agrupar en bloques
-
-            if not any(area in used_areas for area in curve_area):
-                valid_curve = True
-                used_areas.extend(curve_area)
-                curves.append(curve)
-
+        curves.append(curve)
     return curves
 
 # Main
@@ -74,11 +63,11 @@ if __name__ == "__main__":
 
     # Crear lienzo blanco
     canvas = np.ones((750, 1200, 3), dtype=np.uint8) * 255
-    
+
     # Inicializar posiciones aleatorias para inicio y final
     start_point = (np.random.randint(100, 700), np.random.randint(100, 400))
     end_point = (np.random.randint(100, 700), np.random.randint(100, 400))
-    
+
     while True:
         temp_canvas = canvas.copy()
 
@@ -110,16 +99,16 @@ if __name__ == "__main__":
         cv2.putText(canvas, "Final", (end_point[0] - 30, end_point[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
         cv2.circle(canvas, end_point, 10, (0, 0, 255), -1)
 
-    # Dibujar interpolación lineal y curvas de Bézier
+    # Dibujar interpolación lineal y múltiples curvas de Bézier
     if start_point and end_point:
         # Interpolación lineal
         linear_points = linear_interpolation(start_point, end_point)
         for point in linear_points:
             cv2.circle(canvas, point, 1, (0, 0, 255), -1)
 
-        # Curvas de Bézier
-        bezier_curves = bezier_curve(start_point, end_point)
-        for curve in bezier_curves:
+        # Generar y dibujar múltiples curvas de Bézier
+        bezier_curves_list = bezier_curves(start_point, end_point, num_curves=3, separation=40)
+        for curve in bezier_curves_list:
             for i in range(1, len(curve)):
                 cv2.line(canvas, curve[i - 1], curve[i], (0, 0, 0), 1)
 
