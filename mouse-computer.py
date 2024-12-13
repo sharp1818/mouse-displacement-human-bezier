@@ -105,7 +105,7 @@ while running:
 
     # Guardar la imagen y salir automáticamente
     pygame.image.save(screen, "mouse-displacement-computer.jpg")
-    print("Imagen final guardada como mouse-displacement-computer.jpg")
+    print("Imagen final guardada como multiple-trajectories.jpg")
     running = False
 
 # Salir de Pygame
