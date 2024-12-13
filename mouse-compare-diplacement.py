@@ -112,6 +112,11 @@ if __name__ == "__main__":
             for i in range(1, len(curve)):
                 cv2.line(canvas, curve[i - 1], curve[i], (0, 0, 0), 1)
 
-    # Guardar la imagen final con los puntos de inicio y final
+    # Dibujar las líneas manuales en color verde
+    for line in manual_lines:
+        for i in range(1, len(line)):
+            cv2.line(canvas, line[i - 1], line[i], (0, 255, 0), 2)  # Verde
+
+    # Guardar la imagen final con los puntos de inicio, final, y las líneas manuales
     cv2.imwrite("mouse-displacement-compare.jpg", canvas)
     cv2.destroyAllWindows()
