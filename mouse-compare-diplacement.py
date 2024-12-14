@@ -31,7 +31,7 @@ def draw(event, x, y, flags, param):
             drawing = False
 
 # Interpolación lineal
-def linear_interpolation(p1, p2, num_points=100):
+def linear_interpolation(p1, p2, num_points=1000):
     x_vals = np.linspace(p1[0], p2[0], num_points)
     y_vals = np.linspace(p1[1], p2[1], num_points)
     return list(zip(x_vals.astype(int), y_vals.astype(int)))
@@ -65,8 +65,8 @@ if __name__ == "__main__":
     canvas = np.ones((750, 1200, 3), dtype=np.uint8) * 255
 
     # Inicializar posiciones aleatorias para inicio y final
-    start_point = (np.random.randint(100, 700), np.random.randint(100, 400))
-    end_point = (np.random.randint(100, 700), np.random.randint(100, 400))
+    start_point = (np.random.randint(100, 300), np.random.randint(550, 750))
+    end_point = (np.random.randint(800, 1200), np.random.randint(0, 325))
 
     while True:
         temp_canvas = canvas.copy()
@@ -104,7 +104,7 @@ if __name__ == "__main__":
         # Interpolación lineal
         linear_points = linear_interpolation(start_point, end_point)
         for point in linear_points:
-            cv2.circle(canvas, point, 1, (0, 0, 255), -1)
+            cv2.circle(canvas, point, 1, (0, 0, 255), 1)
 
         # Generar y dibujar múltiples curvas de Bézier
         bezier_curves_list = bezier_curves(start_point, end_point, num_curves=3, separation=40)
@@ -115,7 +115,7 @@ if __name__ == "__main__":
     # Dibujar las líneas manuales en color verde
     for line in manual_lines:
         for i in range(1, len(line)):
-            cv2.line(canvas, line[i - 1], line[i], (0, 255, 0), 2)  # Verde
+            cv2.line(canvas, line[i - 1], line[i], (0, 255, 0), 1)  # Verde
 
     # Guardar la imagen final con los puntos de inicio, final, y las líneas manuales
     cv2.imwrite("mouse-displacement-compare.jpg", canvas)
