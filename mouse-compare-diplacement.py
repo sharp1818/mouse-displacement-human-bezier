@@ -65,7 +65,7 @@ if __name__ == "__main__":
     canvas = np.ones((750, 1200, 3), dtype=np.uint8) * 255
 
     # Inicializar posiciones aleatorias para inicio y final
-    start_point = (np.random.randint(100, 300), np.random.randint(550, 750))
+    start_point = (np.random.randint(100, 300), np.random.randint(450, 750))
     end_point = (np.random.randint(800, 1200), np.random.randint(0, 325))
 
     while True:
@@ -116,6 +116,11 @@ if __name__ == "__main__":
     for line in manual_lines:
         for i in range(1, len(line)):
             cv2.line(canvas, line[i - 1], line[i], (0, 255, 0), 1)  # Verde
+
+    # Agregar la leyenda en la parte superior izquierda
+    cv2.putText(canvas, "Interpolacion lineal", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+    cv2.putText(canvas, "Curvas de Bezier", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+    cv2.putText(canvas, "Mouse controlado por un humano", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
 
     # Guardar la imagen final con los puntos de inicio, final, y las líneas manuales
     cv2.imwrite("mouse-displacement-compare.jpg", canvas)
