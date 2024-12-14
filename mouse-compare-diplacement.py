@@ -6,6 +6,7 @@ start_point = None
 end_point = None
 drawing = False
 manual_lines = []
+show_text = True
 
 # Callback para eventos del mouse
 def draw(event, x, y, flags, param):
@@ -70,6 +71,8 @@ if __name__ == "__main__":
 
     while True:
         temp_canvas = canvas.copy()
+        # Agregar la leyenda para salir
+        cv2.putText(canvas, "Presiona la letra 'q' para cerrar el programa", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (150, 150, 150), 1)
 
         # Mostrar puntos inicio y final
         if start_point:
